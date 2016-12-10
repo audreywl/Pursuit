@@ -1,4 +1,4 @@
-time_step = 0.0005;
+time_step = 0.005;
 time_span = 2.5;
 num_steps = time_span / time_step;
 
@@ -17,13 +17,17 @@ positions(:,1,8) = [0,0,1];
 %%Calculate positions matrix
 for j = 1:(size(positions,2)-1)
 
- %Calculate velocities
- for i = 1:7
-     velocities(:,j,i) = positions(:,j,i+1) - positions(:,j,i);
+ %Calculate velocities based on gradient
+ for i = 2:7
+     velocities(:,j,i) = -2*positions(:,j,i) + positions(:,j,i+1) + positions(:,j,i-1);
      velocities(:,j,i) = velocities(:,j,i)/norm(velocities(:,j,i));
  end
- %The last velocity needs manual calculation, because it wraps
- velocities(:,j,8) = positions(:,j,1) - positions(:,j,8);
+ 
+ %The first and last velocities need manual calculation, because they wrap
+ velocities(:,j,1) = -2*positions(:,j,1) + positions(:,j,2) + positions(:,j,8);
+ velocities(:,j,1) = velocities(:,j,1)/norm(velocities(:,j,1)); %Make velocities unit vectors
+ 
+ velocities(:,j,8) = -2*positions(:,j,8) + positions(:,j,1) + positions(:,j,7);
  velocities(:,j,8) = velocities(:,j,8)/norm(velocities(:,j,8)); %Make velocities unit vectors
 
  %Scale velocity to the time_step (i.e. make it a change in position)
