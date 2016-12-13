@@ -1,5 +1,5 @@
-time_step = 0.0005;
-time_span = 2.5;
+time_step = 0.002;
+time_span = 2.0;
 num_steps = time_span / time_step;
 
 positions  = zeros(3,num_steps,4);
@@ -34,9 +34,56 @@ for j = 1:(size(positions,2)-1)
  positions(:,j+1,:) = positions(:,j,:) + velocities(:,j,:);
 end
 
-hold on
-for i = 1:8  
-plot3(positions(1,:,i),positions(2,:,i),positions(3,:,i));
-end
+fig = figure('Position',[20,20,1000,1000]);
+
+
+line1 = animatedline(0,0,0);
+line2 = animatedline(0,1,0);
+line3 = animatedline(1,1,0);
+line4 = animatedline(1,0,0);
+line5 = animatedline(1,0,1);
+line6 = animatedline(1,1,1);
+line7 = animatedline(0,1,1);
+line8 = animatedline(0,0,1);
 axis equal
 axis([0,1,0,1,0,1]);
+set(gca,'visible','off')
+set(gcf,'Color',[1,1,1]);
+
+line([0,0],[0,0],[0,1]);
+line([1,1],[0,0],[0,1]);
+line([0,0],[1,1],[0,1]);
+line([1,1],[1,1],[0,1]);
+line([0,1],[0,0],[0,0]);
+line([0,1],[1,1],[0,0]);
+line([0,1],[0,0],[1,1]);
+line([0,1],[1,1],[1,1]);
+line([0,0],[0,1],[0,0]);
+line([1,1],[0,1],[0,0]);
+line([0,0],[0,1],[1,1]);
+line([1,1],[0,1],[1,1]);
+
+M(num_steps*2) = struct('cdata',[],'colormap',[]);
+
+hold on
+for i = 1:num_steps  
+    addpoints(line1,positions(1,i,1),positions(2,i,1),positions(3,i,1));
+    addpoints(line2,positions(1,i,2),positions(2,i,2),positions(3,i,2));
+    addpoints(line3,positions(1,i,3),positions(2,i,3),positions(3,i,3));
+    addpoints(line4,positions(1,i,4),positions(2,i,4),positions(3,i,4));
+    addpoints(line5,positions(1,i,5),positions(2,i,5),positions(3,i,5));
+    addpoints(line6,positions(1,i,6),positions(2,i,6),positions(3,i,6));
+    addpoints(line7,positions(1,i,7),positions(2,i,7),positions(3,i,7));
+    addpoints(line8,positions(1,i,8),positions(2,i,8),positions(3,i,8));
+    view(i/25-37.5,25);
+    drawnow
+    M(i) = getframe(fig);
+end
+
+k = num_steps;
+for i = k+1:k*2
+    view(i/25-37.5,25);
+    drawnow
+    M(i) = getframe(fig);
+end
+drawnow
